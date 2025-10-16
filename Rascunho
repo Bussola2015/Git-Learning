@@ -1,3 +1,7 @@
+---
+
+#Arquitetura do sistema Git e Github
+#workdir -> GitHub-remoto
 ------------------------- GIT INIT
 
 #somente a primeira vez
@@ -30,6 +34,8 @@ git log --pretty="format:%h %s"
 #sempre para ver status atual
 git status
 
+#diferença de arquivos ou commits
+git diff
 ---------------------------------- GIT ADD 
 
 #add arquivo area de staging - submetendo (disponivel para commit) | Git passa a monitorar o arquivo/diretorio
@@ -71,7 +77,7 @@ git restore nome-arquivo
 git restore Rascunho
 git restore index.html
 
-#comado generico - volta ao ID do commit especifico apenas o arquivo mencionado - volta no tempo
+#comado generico - volta ao ID do commit especifico apenas o arquivo mencionado - volta no tempo apenas para o arquivo no comando
 git restore --source code-hash nome-arquivo
 
 #volta só um arquivo no tempo
@@ -114,6 +120,9 @@ git push repositorio nova-branch  #git push origin dev
 #se eu tiver certeza do que estou fazendo, pode forçar a escrita no remoto
 git push origin main --force
 
+#vincula a branch local com a branch remota, cada uma fica sabendo da outra após os comandos: git pull (local fica sabedo) git push (a remota fica sabendo)
+git push -u origin main
+
 #depois do clone, preciso sincronizar com origin (GitHub), utilizo pull
 git pull https://github.com/Bussola2015/Git-Sketch.git
 #se já tem vinculo não precisa colocar URL
@@ -137,21 +146,90 @@ git config --list
 
 
 ------------------------------------ BRANCH
-#crio branch
-git checkout -b nova-branch
+#criar branch e entra nela
+git checkout -b nova-branch   
 ou 
+git switch -c nome-da-branch
+
+#criar branch
 git branch nome-nova-branch
 
-#escolho a branch
+#alterar de branch
 git checkout nome-nova-branch
 ou 
 git switch nome-branch
 
-#lista as branch e indica em qual branch estamos
+#Listar branches existentes:
 git branch
-git branch -v
 
+#lista as branch com mais detalhes
+git branch -v
+git branch -vv
+
+#Branches remotas
+#Listar branches remotas:
+git branch -r
+
+#Listar todas as branches (locais e remotas)
+git branch -a
+
+#Criar uma branch local a partir de uma branch remota:
+git checkout -b nome-da-branch origin/nome-da-branch
+
+#Excluir uma branch:
+git branch -d nome-da-branch
+
+#Forçar exclusão da branch
+git branch -D nome-da-branch
+
+#Renomear uma branch: (-M força renomear)
+git branch -m novo-nome
+
+#Para renomear uma branch específica:
+git branch -m nome-antigo novo-nome
+
+---------------------------------------------------- FORK
+
+# Como funciona o fluxo:
+# Você faz o fork:
+# O repositório original é copiado para a sua conta no GitHub (fork).
+# Agora você tem controle total sobre o fork.
+# Clona o fork para o seu workdir:
+# Você clona o repositório forkado para o seu computador:
+git clone https://github.com/sua-conta/seu-fork.git
+
+# Adiciona o repositório original como remoto adicional (upstream):
+# Para acompanhar as alterações do repositório original, adicione-o como um remoto chamado upstream:
+git remote add upstream https://github.com/usuario-original/repo-original.git
+
+
+# Verifica as alterações no repositório original:
+# Use o comando git fetch upstream para buscar as alterações do repositório original (upstream):
+git fetch upstream
+
+# Isso não altera sua branch local. Ele apenas atualiza as referências locais para as branches do repositório original.
+# Verifica as alterações sem aplicá-las:
+# Você pode ver os commits ou alterações disponíveis no repositório original:
+git log upstream/main
+
+# O que acontece no seu workdir?
+# O comando git fetch upstream não altera sua branch local ou seu repositório remoto (fork no GitHub).
+# Ele apenas atualiza as referências locais para as branches do repositório original (upstream), permitindo que você veja as alterações disponíveis.
+# Se quiser aplicar as alterações do repositório original ao seu fork:
+# Mescle as alterações do repositório original com sua branch local:
+git merge upstream/main
+
+# Envie as alterações para o seu fork no GitHub:
+git push origin main
+
+#Resumo:
+# Use git fetch upstream para buscar as alterações do repositório original sem alterar nada no seu repositório local ou remoto.
+# Isso acontece no workdir, após você ter clonado o fork e configurado o repositório original como upstream.
+
+
+------------------------------------------------ GIT MERGE
 #merge - fundir/unir uma branch na outra branch
 #precisa estar no branch que será o DESTINO das mudanças - estou na dev quero merge com a main -> git switch main -> git merge dev (o inverso para main quero merge com a dev)
+
 git merge nome-branch
 

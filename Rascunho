@@ -56,7 +56,6 @@ git revert code-hash
 #desfaz no repo remoto
 git push
 
-
 #desfaz o último commit mas o(s) arquivo(s) continuam no staging
 git reset --soft HEAD~1
 

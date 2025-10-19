@@ -161,6 +161,9 @@ git pull https://github.com/Bussola2015/Git-Sketch.git
 #se já tem vinculo não precisa colocar URL
 git pull
 
+#sem merge
+git pull --rebase
+
 OBS: git pull=git fetch+(git merge ou git rebase)
 
 #se eu tiver em outra brach

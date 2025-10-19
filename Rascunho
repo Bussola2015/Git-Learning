@@ -57,10 +57,22 @@ git commit nome-arquivo3 -m "Descrição do commit para o arquivo 3"
 ou 
 #tudo de uma vez - vai depender se fazem parte do mesmo contexto de modificação, senão melhor fazer um de cada vez
 git commit -m "alterei" 
-ou
-git commit . -m "alterei"
 
-------------------------------------- GIT RESTORE|REVERT
+#fiz comite no local, e quero alterar a mensagem - ele não faz outro comite, apenas altera a mendagem
+git commit --amend -m "Trocando a mensagem do último commit"
+#modificar um coommit que faltou umarquivo -  lembrando que --amend só funciona para o cmmit do topo (HEAD), se for outro commit é outro processo.
+git commit --amend 
+
+#add co-autor no mesmo commit - pessoas que ajudaram no commit - pule duas linhas e escreva como abaixo
+git commit -m "Adicionar nova funcionalidade.
+>
+>
+Co-authored-by: NOME <nome@email.com>
+Co-authored-by: OUTRO-NOME <outro@email.com>"
+
+------------------------------------- GIT RESTORE|REVERT|RESET
+
+#RESTORE desfaz no escopo de workdir e staging - desfaz arquivos/diretorios não commitados
 
 #me arrependi de monitorar/add quero desfazer submetido - retida do stage (mas continua com modoficações no workdir)
 git restore nome-arquivo --staged nome-arquivo
@@ -77,29 +89,41 @@ git restore nome-arquivo
 git restore Rascunho
 git restore index.html
 
-#comado generico - volta ao ID do commit especifico apenas o arquivo mencionado - volta no tempo apenas para o arquivo no comando
+#Traz a versão de um arquivo de um commit antigo para o local atual (sem fazer um commit). Mas é boa prática fazer o commit para manter legibilidade no historico.
 git restore --source code-hash nome-arquivo
 
 #volta só um arquivo no tempo
 git restore --source 7b6a9ba index.html
 
 #Exemplo
-#volta no tempo tudo no workdir
-git restore --soruce code-hash .
+#volta no tempo tudo no workdir - todods os arquivos
+git restore --source code-hash .
 git restore --source 7b6a9ba .
 git push
 
-#desvoltar do tempo - Lembrando que eu ainbda poderia fazer o processo inverso
+#REVERT e RESET desfaz commits
+
+#desfazer commits enviados ao repo remoto (push) - volta no tempo - mas nesse comando git revert ID só revertei no local, o push revert no remoto.
 git revert c23ae2d
 git revert code-hash
-#desfaz no repo remoto se foi enviado para o remoto
+#desfaz no repo remoto se foi enviado para o remoto - recomendação sem --force ainda mais se for um repo compartilhado
 git push
 
-#desfaz o último commit mas o(s) arquivo(s) continuam no staging
-git reset --soft HEAD~1
+#git reset ideal para desfazer commits locais
+#desfaz o último commit mas o(s) arquivo(s) continuam no staging com as modificações
+git reset --soft HEAD~1 ou git reset --soft code-hash (ID do commit)
+#desfaz 2 commits
+git reset --soft HEAD~2
+#desfaz 3 commits - e assim por diante
+git reset --soft HEAD~3
 
-#desfaz o commit e descarta as alterações e tira do stage - precisa add novamente - no workdir o arquivo ainda está #modificado
+#desfaz o commit e tira do stage - precisa add novamente - no workdir o arquivo ainda está modificado
 git reset --mixed HEAD~1
+
+#desfaz o commit e destarta as modificações dos arquivos (apaga e sobrescreve os arquivos)
+git reset --hard HEAD~1
+
+OBS: para remover um commit, precisamos selecionar um commit anterior ao que queremos remover, isso vale apenas se estivermos utilizando ID de commit.
 
 --------------------------------------- GIT CONFIG
 
@@ -120,7 +144,7 @@ git push repositorio nova-branch  #git push origin dev
 #se eu tiver certeza do que estou fazendo, pode forçar a escrita no remoto
 git push origin main --force
 
-#vincula a branch local com a branch remota, cada uma fica sabendo da outra após os comandos: git pull (local fica sabedo) git push (a remota fica sabendo)
+#vincula a branch local com a branch remota. Depois desse comando você não precisa espeficcar qual o repo e a branch, ex: git push ou git pull
 git push -u origin main
 
 #depois do clone, preciso sincronizar com origin (GitHub), utilizo pull
@@ -136,6 +160,12 @@ git pull origin dev
 git remote add origin https://github.com/usuario/repo.git
 #lista meus repo remoto vinculados
 git remote -v  
+
+#remover repo remoto
+git remote remove origin
+
+#alterar o nome padrão origin
+git remote rename origin novo-origin
 
 #check se tem identificador definido
 git config --list
@@ -182,8 +212,11 @@ git branch -d nome-da-branch
 #Forçar exclusão da branch
 git branch -D nome-da-branch
 
-#Renomear uma branch: (-M força renomear)
+#Renomear uma branch
 git branch -m novo-nome
+
+#força o renomeio 
+git branch -M novo nome
 
 #Para renomear uma branch específica:
 git branch -m nome-antigo novo-nome

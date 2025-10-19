@@ -34,8 +34,12 @@ git log --pretty="format:%h %s"
 #sempre para ver status atual
 git status
 
-#diferença de arquivos ou commits
+#diferença de arquivos fore do stage
 git diff
+#fifere o que está no stage
+git diff --staged
+
+git show
 ---------------------------------- GIT ADD 
 
 #add arquivo area de staging - submetendo (disponivel para commit) | Git passa a monitorar o arquivo/diretorio
@@ -110,6 +114,11 @@ git revert code-hash
 git push
 
 #git reset ideal para desfazer commits locais
+
+#retira da area de staging
+git reset nome-arquivo
+
+
 #desfaz o último commit mas o(s) arquivo(s) continuam no staging com as modificações
 git reset --soft HEAD~1 ou git reset --soft code-hash (ID do commit)
 #desfaz 2 commits
@@ -152,6 +161,8 @@ git pull https://github.com/Bussola2015/Git-Sketch.git
 #se já tem vinculo não precisa colocar URL
 git pull
 
+OBS: git pull=git fetch+(git merge ou git rebase)
+
 #se eu tiver em outra brach
 git pull repositorio branch
 git pull origin dev
@@ -170,6 +181,8 @@ git remote rename origin novo-origin
 #check se tem identificador definido
 git config --list
 
+git config user.name
+git config user.email
 ------------------------------------ .GITIGNORE
 
 .gitignore #pode ser encontrado no workdir, Github remoto e em subdiretórios

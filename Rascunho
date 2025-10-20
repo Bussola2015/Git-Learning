@@ -32,6 +32,7 @@ git log --author="user_name"
 #formatar a visualização
 git log --pretty="format:%h %s"
 
+git log --graph
 ----------------------------------GIT STATUS
 
 #sempre para ver status atual
@@ -67,7 +68,8 @@ git commit -m "alterei"
 
 #fiz comite no local, e quero alterar a mensagem - ele não faz outro comite, apenas altera a mendagem
 git commit --amend -m "Trocando a mensagem do último commit"
-#modificar um coommit que faltou umarquivo -  lembrando que --amend só funciona para o cmmit do topo (HEAD), se for outro commit é outro processo.
+#modificar um commit que faltou um arquivo -  lembrando que --amend só funciona para o commit do topo (HEAD), se for outro commit é outro processo.
+git add arquivo
 git commit --amend 
 
 #add co-autor no mesmo commit - pessoas que ajudaram no commit - pule duas linhas e escreva como abaixo
@@ -108,7 +110,7 @@ git restore --source code-hash .
 git restore --source 7b6a9ba .
 git push
 
-#REVERT e RESET desfaz commits
+#REVERT e RESET desfaz commits - mas faz commit para registrar a reversão
 
 #desfazer commits enviados ao repo remoto (push) - volta no tempo - mas nesse comando git revert ID só revertei no local, o push revert no remoto.
 git revert c23ae2d
@@ -116,10 +118,12 @@ git revert code-hash
 #desfaz no repo remoto se foi enviado para o remoto - recomendação sem --force ainda mais se for um repo compartilhado
 git push
 
-#git reset ideal para desfazer commits locais
+#git reset ideal para desfazer commits locais (repo local)
 
 #retira da area de staging
-git reset nome-arquivo
+git reset nome-arquivo 
+ou
+git restore nome-arquivo --staged nome-arquivo
 
 
 #desfaz o último commit mas o(s) arquivo(s) continuam no staging com as modificações
@@ -279,9 +283,28 @@ git push origin main
 # Isso acontece no workdir, após você ter clonado o fork e configurado o repositório original como upstream.
 
 
------------------------------------------------- GIT MERGE
+------------------------------------------------ GIT MERGE | REBASE
 #merge - fundir/unir uma branch na outra branch
 #precisa estar no branch que será o DESTINO das mudanças - estou na dev quero merge com a main -> git switch main -> git merge dev (o inverso para main quero merge com a dev)
 
 git merge nome-branch
 
+git rebase nome-branch
+
+
+
+#tipo um metadado do HEAD - mantém o historico de todos os HEAD
+git reflog
+
+#salva arquivo no workdir ou stage - congela para depois volta de onde parou
+git stash
+#lista as stashs com IDs
+git stash list
+#retorna onde estava
+git stash apply ID
+
+#precisa remover manualmente a stash salva
+git stash drop ID
+
+#equivale git stash apply ID seguido de git stash drop ID - executa depois comandos git em um
+git stash pop 

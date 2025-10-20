@@ -11,8 +11,11 @@ git clone https://github.com/Bussola2015/Git-Sketch.git
 git clone --branch new_feature nome-repositorio
 git clone --branch dev https://github.com/Bussola2015/Git-Sketch.git
 
-#inicializa - diz para o Git, quero que esse diretorio seja meu workdir, passe a rastrear tudo aqui
+#inicializa - diz para o Git, quero que esse diretorio seja meu workdir, passe a rastrear tudo aqui (git client)
 git init
+
+#inicializa um git serer
+git init --bare
 
 OBS: Se você já clonou um repositório com git clone, não precisa usar git init, pois o repositório já está inicializado.git clone https://github.com/sua-conta/seu-fork.gitgit clone https://github.com/sua-conta/seu-fork.gitgit clone https://github.com/sua-conta/seu-fork.git
 

@@ -1,7 +1,7 @@
 ---
 
 #Arquitetura do sistema Git e Github
-#workdir -> GitHub-remoto
+#workdir tree -> GitHub-remoto
 ------------------------- GIT INIT
 
 #somente a primeira vez
@@ -99,7 +99,7 @@ Co-authored-by: OUTRO-NOME <outro@email.com>"
 
 #RESTORE desfaz no escopo de workdir e staging - desfaz arquivos/diretorios não commitados
 
-#me arrependi de monitorar/add quero desfazer submetido - retida do stage (mas continua com modoficações no workdir)
+#retida do stage (mas continua com modificações no workdir)
 git restore nome-arquivo --staged nome-arquivo
 
 #voltei a rastrear
@@ -108,11 +108,15 @@ git add nome-arquivo
 git commit -m "Volta a rastrear nome-arquivo"
 
 
-#desfaz as alterações no arquivo - undo
-git restore nome-arquivo
+#desfaz as alterações no arquivo - undo ou CTRL+Z - Para o estado do último commit (HEAD)
+git restore nome-arquivo ou git restore --source HEAD nome-arquivo
 #Exemplo
 git restore Rascunho
 git restore index.html
+
+#desfaz todas as alterações dos arquivos no workdir - Para o estado do último commit (HEAD)
+git restore .
+git checkout -- . #equivale ao comando acima
 
 #Traz a versão de um arquivo de um commit antigo para o local atual (sem fazer um commit e não altera histórico). Mas é boa prática fazer o commit para manter legibilidade no historico.
 git restore --source code-hash nome-arquivo
@@ -335,13 +339,17 @@ git stash
 #lista as stashs com IDs
 git stash list
 #retorna onde estava
-git stash apply ID
+
+git stash apply ID-stash
 
 #precisa remover manualmente a stash salva
-git stash drop ID
+git stash drop ID-stash
 
-#equivale git stash apply ID seguido de git stash drop ID - executa depois comandos git em um
+#equivale git stash apply ID seguido de git stash drop ID - traz o "HEAD" dos stashs salvos 
 git stash pop 
+
+#limpa todas as stashs
+git stash clear
 
 --------------------------------------------- GIT TAG
 #-a = add
@@ -587,4 +595,8 @@ git pull origin main
 
 #limpo a branch feature/otimizar-performance local
 git branch -d feature/otimizar-performance  
+
+#estou na main local e removo a branch do remoto
+git push origin :feature/otimizar-performance  #remove a branch do remoto
+
 

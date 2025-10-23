@@ -170,7 +170,7 @@ git config user.name "Your Name"
 
 #enviar para o Github
 git push origin main
-git push repositorio nova-branch  #git push origin dev
+git push repositorio nomegit-branch  #git push origin dev
 
 #se eu tiver certeza do que estou fazendo, pode forçar a escrita no remoto
 git push origin main --force

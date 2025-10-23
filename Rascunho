@@ -14,7 +14,7 @@ git clone --branch dev https://github.com/Bussola2015/Git-Sketch.git
 #inicializa - diz para o Git, quero que esse diretorio seja meu workdir, passe a rastrear tudo aqui (git client)
 git init
 
-#inicializa um git serer
+#inicializa um git server em um diretório - repositório bare (sem workdir)
 git init --bare
 
 OBS: Se você já clonou um repositório com git clone, não precisa usar git init, pois o repositório já está inicializado.git clone https://github.com/sua-conta/seu-fork.gitgit clone https://github.com/sua-conta/seu-fork.gitgit clone https://github.com/sua-conta/seu-fork.git
@@ -33,17 +33,33 @@ git log --author="user_name"
 git log --pretty="format:%h %s"
 
 git log --graph
+
+git log --format="%h - %an, %ar : %s"
+
+#mostra somente os últimos 2 commits
+git log -n 2
+
 ----------------------------------GIT STATUS
 
 #sempre para ver status atual
 git status
 
-#diferença de arquivos fore do stage
+#arquivos modificados, não commitados no workdir com o último commit no repo local - compara estados entre arquivos no workdir não commitados e o último commit
 git diff
-#fifere o que está no stage
+#difere o que está no stage
 git diff --staged
+#mostra a diferença em um intervalo de mudanças entre commits 
+git diff ID-commit..ID-commit
 
-git show
+#mostra as mudanças em determinado commit
+git show ID-commit
+
+#mostra as mudanças do último commit (HEAD é o ponteiro para o último commit)
+git show 
+
+#git diff mostra a diferença entre commits
+#git show mostra as mudanças realizados por determinado commit
+
 ---------------------------------- GIT ADD 
 
 #add arquivo area de staging - submetendo (disponivel para commit) | Git passa a monitorar o arquivo/diretorio
@@ -68,7 +84,7 @@ git commit -m "alterei"
 
 #fiz comite no local, e quero alterar a mensagem - ele não faz outro comite, apenas altera a mendagem
 git commit --amend -m "Trocando a mensagem do último commit"
-#modificar um commit que faltou um arquivo -  lembrando que --amend só funciona para o commit do topo (HEAD), se for outro commit é outro processo.
+#modificar um commit que faltou um arquivo - lembrando que --amend só funciona para o commit do topo (HEAD), se for outro commit é outro processo.
 git add arquivo
 git commit --amend 
 
@@ -98,21 +114,21 @@ git restore nome-arquivo
 git restore Rascunho
 git restore index.html
 
-#Traz a versão de um arquivo de um commit antigo para o local atual (sem fazer um commit). Mas é boa prática fazer o commit para manter legibilidade no historico.
+#Traz a versão de um arquivo de um commit antigo para o local atual (sem fazer um commit e não altera histórico). Mas é boa prática fazer o commit para manter legibilidade no historico.
 git restore --source code-hash nome-arquivo
 
 #volta só um arquivo no tempo
 git restore --source 7b6a9ba index.html
 
 #Exemplo
-#volta no tempo tudo no workdir - todods os arquivos
+#volta no tempo tudo no workdir - todos os arquivos
 git restore --source code-hash .
 git restore --source 7b6a9ba .
 git push
 
 #REVERT e RESET desfaz commits - mas faz commit para registrar a reversão
 
-#desfazer commits enviados ao repo remoto (push) - volta no tempo - mas nesse comando git revert ID só revertei no local, o push revert no remoto.
+#desfazer commits enviados ao repo remoto (push) - volta no tempo desfazendo commits - cria um novo commit que desfaz as alterações do commit selecionado
 git revert c23ae2d
 git revert code-hash
 #desfaz no repo remoto se foi enviado para o remoto - recomendação sem --force ainda mais se for um repo compartilhado
@@ -122,7 +138,6 @@ git push
 
 #retira da area de staging
 git reset nome-arquivo 
-ou
 git restore nome-arquivo --staged nome-arquivo
 
 
@@ -168,10 +183,10 @@ git pull https://github.com/Bussola2015/Git-Sketch.git
 #se já tem vinculo não precisa colocar URL
 git pull
 
-#sem merge
+#sem merge - git fetch + git rebase - acrescenta as mudanças do remoto no topo do histórico local
 git pull --rebase
 
-OBS: git pull=git fetch+(git merge ou git rebase)
+OBS: git pull=git fetch+(git merge ou git rebase)
 
 #se eu tiver em outra brach
 git pull repositorio branch
@@ -244,6 +259,17 @@ git branch -M novo nome
 #Para renomear uma branch específica:
 git branch -m nome-antigo novo-nome
 
+
+#Controle do HEAD através do checkout - volta no tempo com HEAD, assim podemos reverter o arquivo e seguir uma branch nova a partir dali
+git checkout ID-commit
+
+
+#cria um branch
+git checkout -b nova-branch
+git commit -m "mensagem"
+#voltei para master, mas meu branch criado acima ficou com meu commit
+git checkout main
+
 ---------------------------------------------------- FORK
 
 # Como funciona o fluxo:
@@ -252,31 +278,34 @@ git branch -m nome-antigo novo-nome
 # Agora você tem controle total sobre o fork.
 # Clona o fork para o seu workdir:
 # Você clona o repositório forkado para o seu computador:
-git clone https://github.com/sua-conta/seu-fork.git
+git clone https://github.com/sua-conta/seu-fork.git
 
 # Adiciona o repositório original como remoto adicional (upstream):
 # Para acompanhar as alterações do repositório original, adicione-o como um remoto chamado upstream:
-git remote add upstream https://github.com/usuario-original/repo-original.git
+git remote add upstream https://github.com/usuario-original/repo-original.git
 
 
 # Verifica as alterações no repositório original:
 # Use o comando git fetch upstream para buscar as alterações do repositório original (upstream):
-git fetch upstream
+git fetch upstream
+
+#verifique seus repos remoto
+git remote -v
 
 # Isso não altera sua branch local. Ele apenas atualiza as referências locais para as branches do repositório original.
 # Verifica as alterações sem aplicá-las:
 # Você pode ver os commits ou alterações disponíveis no repositório original:
-git log upstream/main
+git log upstream/main
 
 # O que acontece no seu workdir?
 # O comando git fetch upstream não altera sua branch local ou seu repositório remoto (fork no GitHub).
 # Ele apenas atualiza as referências locais para as branches do repositório original (upstream), permitindo que você veja as alterações disponíveis.
 # Se quiser aplicar as alterações do repositório original ao seu fork:
 # Mescle as alterações do repositório original com sua branch local:
-git merge upstream/main
+git merge upstream/main
 
 # Envie as alterações para o seu fork no GitHub:
-git push origin main
+git push origin main
 
 #Resumo:
 # Use git fetch upstream para buscar as alterações do repositório original sem alterar nada no seu repositório local ou remoto.
@@ -287,14 +316,19 @@ git push origin main
 #merge - fundir/unir uma branch na outra branch
 #precisa estar no branch que será o DESTINO das mudanças - estou na dev quero merge com a main -> git switch main -> git merge dev (o inverso para main quero merge com a dev)
 
-git merge nome-branch
+git merge nome-branch-origem
 
-git rebase nome-branch
+#rebase é o contrário do merge, precisa está na branch origem para executar git rebase branch-destino
+git rebase nome-branch-destino
 
+#unindo commits
+git rebase -i HEAD~3 ou git rebase -i ID-commit #ID do anterior ao commit que eu quero
 
+-------------------------------------------------- GIT REFLOG
 
 #tipo um metadado do HEAD - mantém o historico de todos os HEAD
 git reflog
+------------------------------------------------- GIT STASH
 
 #salva arquivo no workdir ou stage - congela para depois volta de onde parou
 git stash
@@ -308,3 +342,249 @@ git stash drop ID
 
 #equivale git stash apply ID seguido de git stash drop ID - executa depois comandos git em um
 git stash pop 
+
+--------------------------------------------- GIT TAG
+#-a = add
+git tag -a nome-da-tag -m "mensagem"
+git tag -a v0.1.0 -m "mensagem de milestone"
+
+#lista tags
+git tag
+
+#enviar a tag
+git push origin v0.1.0
+
+git show nome-tag-ou-versao
+git show v0.1.0
+
+--------------------------------------------- GIT CHERRY-PICK
+#geralmente o que está em branch diferente e queremos trazer esse commit para essa branch. Executo o comando abaixo na branch destino.
+#ex: estou na branch realease, não terminei mas já fiz uns commit, precisei ir para a master fazer bugfix e vi que preciso de um correção que eu já fiz na branch realese, assim uso um cherry-pick (commit de outra branch na minha branch atual) que resolve meu problema.
+git cherry-pick ID-commit
+
+#depois que corrigiu com cherry pick - lembrando na branch origem
+git rebase nome-branch
+
+---------------------------------------------- GIT BISECT
+
+git log --oneline
+
+#inicia a busca
+git bisect start
+#informar intervalo de busca
+
+#exemplo de onde no historico está ruim - escolhemos no começo HEAD, significa que o último commit está ruim
+git bisect bad HEAD
+
+#exemplo de good - esse commit está OK
+git bisect good ID-commit
+
+#Acima good e bad formei um intervalo de busca, depois eu vou filtrando com um good ou bad. Nesse casso o commit está bom
+git bisect good
+
+#esse commit não é o que eu quero
+git bisect bad
+
+#quando eu acahr o commit desejado, é só executar um
+git bisect reset
+
+git revert ID-commit
+
+---------------------------------- GIT BLAME
+
+#encontra quem fez as modificações - o responsável pelo commit
+git blame nome-arquivo
+
+
+
+--------------------- FLUXO GITHUB FLOW - COM REBASE
+#FASE 1:
+#estou branch main Local
+git switch main
+
+#baixo o main remoto
+git pull origin main
+
+#FASE 2:
+#crio a branch e mudo para ela
+git switch -c feature/minha-tarefa 
+ou git checkout -b feature/minha-tarefa
+
+#edito os arquivos
+
+#add stage
+git add .
+
+git commit -m "Implementando feature X"
+
+#crio a branch no remoto se não existir e publico as mudanças na branch feature no remoto
+git push -u origin feature/minha-tarefa
+
+#FASE 3:
+#volto para minha branch main local
+git switch main
+
+#sincronizo e baixo novamente o repo para manter atualizado evitando conflitos
+git pull origin main
+
+#volto e sincronizo para branch feature no local
+git switch feature/minha-tarefa
+
+#sincronizo com a minha main - envio os commits para o topo da main local
+git rebase main
+
+#atualizo o branch feature remoto 
+git push --force-with-lease
+
+
+--------------------- FLUXO GITHUB FLOW - COM MERGE
+#FASE 1:
+#estou branch main Local
+git switch main
+
+#baixo o main remoto
+git pull origin main
+
+#FASE 2:
+#crio a branch e mudo para ela
+git switch -c feature/nova-api 
+ou git checkout -b feature/nova-api
+
+#edito os arquivos
+
+#add stage
+git add .
+
+git commit -m "Implementando feature X"
+
+#crio a branch no remoto se não existir e publico as mudanças na branch feature no remoto
+git push -u origin feature/nova-api
+
+#FASE 3:
+#estou branch feature/nova-api
+git pull origin main
+
+#envio as mudanças para o remoto na branch feature/nova-api
+git push
+
+#posso fazer dessa maneira mais didática
+#saio da branch feature/nova-api e vou para main local
+git switch main
+
+git pull origin main
+#volto para feature/nova-api
+git switch feature/nova-api
+#merge main na feature/nova-api
+git merge main
+#envio as mudanças para o remoto na branch feature/nova-api
+git push origin feature/nova-api
+
+#FASE 4:
+#PULL REQUEST no GitHub - faço a solicitação para unir a branch feature/nova-api na main
+#Interface Web: Abrir PR
+#Abre o pedido de mesclagem (feature/nova-api -> main)
+#depois de aprovado faço o merge no GitHub
+
+#volto para main local
+git switch main
+git pull origin main
+
+--------------------------------------------------------GIT FLOW default
+#FASE 1:
+#estou na master local vou para develop local
+git checkout develop
+
+git pull origin develop
+
+#FASE 2:
+#crio a branch de feature e mudo para ela
+git switch -c feature/cadastro-usuario
+
+#trabalho nos arquivos
+
+#add stage
+git add .
+
+git commit -m "Implementando cadastro-usuario"
+
+git push -u origin feature/cadastro-usuario
+
+#FASE 3:
+#volto para develop local (estava na feature/cadastro-usuario)
+git switch develop
+
+#atualizo o develop local com o develop remoto que pode ter mudado
+git pull origin develop
+
+#volto para a branch feature/cadastro-usuario
+git switch feature/cadastro-usuario
+
+#faço o merge do develop no feature/cadastro-usuario
+git merge develop
+
+#envia as mudanças para o remoto na branch feature/cadastro-usuario - ou git push 
+git push origin feature/cadastro-usuario
+
+
+#FASE 4:
+#Interface Web: Abrir PR - Cria PR para integrar feature/cadastro-usuario na develop
+#depois de aprovado faço o merge no GitHub
+
+#volto para develop local
+git switch develop
+
+#baixo as mudanças do develop remoto
+git pull origin develop
+
+#limpo a branch feature/cadastro-usuario local
+git branch -d feature/cadastro-usuario
+
+------------------------------------------------------ GITHUB FLOW - MERGE DEFAULT 
+
+#FASE 1:
+#estou branch main Local
+git switch main
+
+git pull origin main
+
+#FASE 2:
+#crio a branch a partir da main e mudo para ela
+git switch -c feature/otimizar-performance
+
+#Edição de código...
+
+git add .
+git commit -m "Implementando otimizacao de cache"
+
+git push -u origin feature/otimizar-performance
+
+#FASE 3:
+#volto para minha branch main local
+git switch main 
+
+#sincronizo e baixo novamente o repo para manter atualizado evitando conflitos
+git pull origin main    
+
+#volto e sincronizo para branch feature no local    
+git switch feature/otimizar-performance
+
+#merge main na feature/otimizar-performance
+git merge main
+
+#atualizo o branch feature remoto 
+git push origin feature/otimizar-performance    
+
+#FASE 4:
+#PULL REQUEST no GitHub - faço a solicitação para unir a branch feature/otimizar-performance na main
+#Interface Web: Abrir PR
+#Abre o pedido de mesclagem (feature/otimizar-performance -> main)
+#depois de aprovado faço o merge no GitHub      
+
+#volto para main local
+git switch main  
+
+git pull origin main
+
+#limpo a branch feature/otimizar-performance local
+git branch -d feature/otimizar-performance  
+

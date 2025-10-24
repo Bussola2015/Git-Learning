@@ -1,6 +1,43 @@
 # 🐙 Guia Essencial de Comandos e Fluxos de Trabalho Git & GitHub
 
-Este guia reúne comandos fundamentais e os principais fluxos de trabalho (Git Flow e GitHub Flow) para referência rápida.
+Este guia reúne comandos fundamentais e os principais fluxos de trabalho (*Git Flow* e *GitHub Flow*) para referência rápida.
+
+## Índice
+- [1. Configuração e Inicialização](#1-configuração-e-inicialização)
+  - [GIT INIT & CLONE](#git-init--clone)
+  - [GIT CONFIG & .GITIGNORE](#git-config--gitignore)
+- [2. Visualização, Status e Logs](#2-visualização-status-e-logs)
+  - [GIT STATUS](#git-status)
+  - [GIT DIFF & SHOW](#git-diff--show)
+  - [GIT LOG & REFLOG](#git-log--reflog)
+- [3. Ciclo de Vida do Arquivo](#3-ciclo-de-vida-do-arquivo)
+  - [GIT ADD & COMMIT](#git-add--commit)
+  - [GIT RESTORE](#git-restore-desfazer-não-commitados)
+  - [GIT RESET](#git-reset-desfazer-commits-locais)
+  - [GIT REVERT](#git-revert-desfazer-commits-remotos)
+  - [GIT RM](#git-rm-remover-do-rastreamento)
+- [4. Sincronização com Repositório Remoto](#4-sincronização-com-repositório-remoto)
+  - [GIT PUSH & PULL](#git-push--pull)
+  - [GIT REMOTE](#git-remote)
+- [5. Gerenciamento de Branches](#5-gerenciamento-de-branches)
+  - [GIT BRANCH & SWITCH](#git-branch--switch)
+- [6. Merge e Rebase](#6-merge-e-rebase)
+  - [GIT MERGE & REBASE](#git-merge--rebase)
+- [7. Stash (Alterações Temporárias)](#7-stash-alterações-temporárias)
+  - [GIT STASH](#git-stash)
+- [8. Tags (Marcar Versões)](#8-tags-marcar-versões)
+  - [GIT TAG](#git-tag)
+- [9. Cherry-pick (Migrar Commit)](#9-cherry-pick-migrar-commit)
+  - [GIT CHERRY-PICK](#git-cherry-pick)
+- [10. Busca Binária](#10-busca-binária)
+  - [GIT BISECT](#git-bisect)
+- [11. Fluxos de Trabalho](#11-fluxos-de-trabalho)
+  - [11.1. Fluxo Fork](#111-fluxo-fork-contribuição-para-projetos-externos)
+  - [11.2. GitHub Flow (com Rebase)](#112-github-flow-com-rebase)
+  - [11.3. GitHub Flow (com Merge Padrão)](#113-github-flow-com-merge-padrão)
+  - [11.4. Git Flow (Feature → Develop)](#114-git-flow-default---feature--develop)
+- [12. Glossário Rápido](#12-glossário-rápido)
+- [13. Dicas Finais](#13-dicas-finais)
 
 ---
 
@@ -10,12 +47,14 @@ Este guia reúne comandos fundamentais e os principais fluxos de trabalho (Git F
 
 | Comando | Propósito | Exemplo |
 | :--- | :--- | :--- |
-| `git clone` | Clona um repositório remoto para o seu `workdir` local. | `git clone https://github.com/usuario/repo.git` |
+| `git clone` | Clona um repositório remoto para o *workdir* local. | [cite_start]`git clone https://github.com/usuario/repo.git` [cite: 1] |
 | `git clone --branch` | Clona apenas uma *branch* específica. | [cite_start]`git clone --branch dev https://github.com/Bussola2015/Git-Sketch.git` [cite: 1] |
-| `git init` | Inicializa um repositório Git local no diretório atual (o *workdir*). | [cite_start]`git init` [cite: 1] |
+| `git init` | Inicializa um repositório Git local no diretório atual (*workdir*). | [cite_start]`git init` [cite: 1] |
 | `git init --bare` | Inicializa um servidor Git em um diretório (repositório *bare*, sem *workdir*). | [cite_start]`git init --bare` [cite: 1] |
 
 > [cite_start]**OBS:** Se você já clonou um repositório com `git clone`, não precisa usar `git init`. [cite: 1]
+
+---
 
 ### GIT CONFIG & .GITIGNORE
 
@@ -31,10 +70,11 @@ Este guia reúne comandos fundamentais e os principais fluxos de trabalho (Git F
     ```
 * **Verificar Configurações**:
     ```bash
-    git config --list 
-    git config user.name 
+    git config --list [cite: 14]
+    git config user.name [cite: 14]
+    git config user.email [cite: 14]
     ```
-* **`.gitignore`**: Arquivo no *workdir* ou em subdiretórios para desconsiderar arquivos do rastreamento Git. 
+* **`.gitignore`**: Arquivo no *workdir* ou em subdiretórios para desconsiderar arquivos do rastreamento Git. Exemplo: ignorar `node_modules/` ou `.env`. [cite: 15]
 
 ---
 
@@ -42,42 +82,52 @@ Este guia reúne comandos fundamentais e os principais fluxos de trabalho (Git F
 
 ### GIT STATUS
 
-* **Ver Status Atual**: Sempre usado para verificar o estado dos arquivos (modificados, *staged*, *untracked*).
+* **Ver Status Atual**: Verifica o estado dos arquivos (modificados, *staged*, *untracked*).
     ```bash
     git status [cite: 2]
     ```
+
+---
 
 ### GIT DIFF & SHOW
 
 | Comando | Propósito | Comparação |
 | :--- | :--- | :--- |
-| `git diff` | Mostra as alterações não commitadas no *workdir* (compara com o último *commit*). | [cite_start]*Workdir* vs. Repo Local (*HEAD*) [cite: 3] |
-| `git diff --staged` | Compara o que está no *staging area* (compara com último no *commit*). | [cite_start]*Staging* vs. Repo Local (*HEAD*) [cite: 3] |
-| `git diff ID-commit..ID-commit` | Mostra a diferença em um intervalo de *commits*. | [cite_start]*Commit* A vs. *Commit* B [cite: 3] |
-| `git show ID-commit` | Mostra as mudanças (e a mensagem) em um *commit* específico. | [cite_start]*Commit* vs. Seu Ancestral [cite: 3] |
-| `git show` | Mostra as mudanças do último *commit* (o `HEAD`). | [cite_start]*HEAD* vs. *HEAD*^ [cite: 3] |
+| `git diff` | Mostra alterações não commitadas no *workdir* em relação ao último *commit*. | [cite_start]*Workdir* vs. *HEAD* [cite: 3] |
+| `git diff --staged` | Compara alterações na *staging area* com o último *commit*. | [cite_start]*Staging* vs. *HEAD* [cite: 3] |
+| `git diff ID-commit..ID-commit` | Compara alterações entre dois *commits*. | [cite_start]*Commit A* vs. *Commit B* [cite: 3] |
+| `git show ID-commit` | Exibe alterações e mensagem de um *commit* específico. | [cite_start]*Commit* vs. Ancestral [cite: 3] |
+| `git show` | Exibe alterações do último *commit* (*HEAD*). | [cite_start]*HEAD* vs. *HEAD^1* [cite: 3] |
+
+---
 
 ### GIT LOG & REFLOG
 
 * **Histórico Completo**:
     ```bash
-    [cite_start]git log [cite: 2]
+    git log [cite: 2]
     ```
 * **Visualizações Úteis**:
     ```bash
     git log --oneline # Histórico em uma linha [cite: 2]
     git log --graph # Visualização gráfica (ASCII) [cite: 2]
-    git log -p # Mais detalhes (com patches) [cite: 2]
-    git log --author="user_name" # Log de autor específico [cite: 2]
-    git log -n 2 # Mostra somente os últimos 2 commits [cite: 2]
-    git log nome-branch # Log de branch específica [cite: 2]
-    git log --pretty="format:%h %s" # Formata a visualização [cite: 2]
+    git log -p # Detalhes completos (com patches) [cite: 2]
+    git log --author="user_name" # Filtra por autor [cite: 2]
+    git log -n 2 # Mostra os últimos 2 commits [cite: 2]
+    git log nome-branch # Log de uma branch específica [cite: 2]
+    git log --pretty="format:%h %s" # Formato personalizado [cite: 2]
     ```
-* **Reflog (Metadados do HEAD)**: Mantém o histórico de todos os `HEAD` (útil para recuperação).
+* **Reflog (Metadados do HEAD)**: Registra movimentos do *HEAD*, útil para recuperar *commits* perdidos após *resets*.
     ```bash
-    git reflog 
+    git reflog [cite: 28]
     ```
-* **GIT BLAME**: Encontra o responsável (autor do *commit*) pelas modificações em cada linha de um arquivo.
+    * **Exemplo**: Recuperar um *commit* perdido após `git reset --hard`:
+      ```bash
+      git reflog # Identifica o ID do commit
+      git checkout ID-commit # Volta ao commit
+      git branch nova-branch # Cria nova branch
+      ```
+* **GIT BLAME**: Mostra o autor de cada linha de um arquivo.
     ```bash
     git blame nome-arquivo [cite: 31]
     ```
@@ -88,468 +138,502 @@ Este guia reúne comandos fundamentais e os principais fluxos de trabalho (Git F
 
 ### GIT ADD & COMMIT
 
-* **Adicionar Arquivos ao Staging Area**: Faz com que o Git passe a monitorar o arquivo, deixando-o pronto para o *commit*.
+* **Adicionar Arquivos ao Staging Area**: Prepara arquivos para o *commit*.
     ```bash
     git add nome-arquivo1 nome-arquivo2 [cite: 4]
     git add . [cite: 4]
     ```
 * **Realizar Commit**:
     ```bash
-    # Commita todos os arquivos no Staging Area
-    git commit -m "Minha mensagem" [cite: 6]
-    #commit individual
-    git commit nome-arquivo1 -m "Descrição do commit para o arquivo 1"
-    git commit nome-arquivo2 -m "Descrição do commit para o arquivo 2"
+    # Commita todos os arquivos no *staging*
+    git commit -m "feat: adiciona nova funcionalidade" [cite: 6]
+    # Commit individual
+    git commit nome-arquivo1 -m "fix: corrige bug no arquivo 1" [cite: 6]
+    git commit nome-arquivo2 -m "docs: atualiza documentação" [cite: 6]
     ```
 * **Modificar o Último Commit (`--amend`)**:
     ```bash
-    # Altera apenas a mensagem do último commit
-    git commit --amend -m "Trocando a mensagem do último commit" [cite: 6]
-
-    # Adiciona um arquivo esquecido ao último commit
+    # Altera a mensagem do último commit
+    git commit --amend -m "fix: ajusta mensagem do commit" [cite: 6]
+    # Adiciona arquivo esquecido
     git add arquivo [cite: 7]
     git commit --amend [cite: 7]
     ```
-* **Adicionar Co-autor**: Inclui colaboradores no *commit* (pular duas linhas após a mensagem).
+* **Adicionar Co-autor**:
     ```bash
-    git commit -m "Adicionar nova funcionalidade.
+    git commit -m "feat: implementa login.
 
-    Co-authored-by: NOME <nome@email.com>
-    Co-authored-by: OUTRO-NOME <outro@email.com>" [cite: 7]
+    Co-authored-by: Nome <nome@email.com>
+    Co-authored-by: Outro Nome <outro@email.com>" [cite: 7]
     ```
 
-### GIT RESTORE (Desfazer não-commitados)
+---
 
-O `restore` desfaz alterações no escopo do *workdir* e *staging area*, **sem alterar o histórico de commits**.
+### GIT RESTORE (Desfazer Não-Commitados)
+
+O `restore` desfaz alterações no *workdir* e *staging area*, sem alterar o histórico de *commits*.
 
 | Comando | Propósito | Exemplo |
 | :--- | :--- | :--- |
-| `git restore --staged` | Retira o arquivo do *staging* (volta para o *workdir*). | [cite_start]`git restore nome-arquivo --staged nome-arquivo` [cite: 7] |
-| `git restore nome-arquivo` | Desfaz as alterações do arquivo no *workdir* (volta ao estado do `HEAD`). | [cite_start]`git restore index.html` [cite: 8] |
-| `git restore .` | Desfaz **todas** as alterações não commitadas no *workdir* (volta ao estado do `HEAD`). | [cite_start]`git restore .` [cite: 9] |
-| `git restore --source` | Traz a versão de um arquivo de um *commit* antigo para o local atual. | [cite_start]`git restore --source 7b6a9ba index.html` [cite: 11] |
-| `git restore --source .` | Restaura todos os arquivos do *workdir* para o estado de um *hash* específico. | [cite_start]`git restore --source 7b6a9ba .` [cite: 12] |
+| `git restore --staged` | Remove arquivo do *staging*, mantendo no *workdir*. | [cite_start]`git restore --staged index.html` [cite: 7] |
+| `git restore nome-arquivo` | Desfaz alterações no *workdir* (volta ao *HEAD*). | [cite_start]`git restore index.html` [cite: 8] |
+| `git restore .` | Desfaz todas as alterações no *workdir* (volta ao *HEAD*). | [cite_start]`git restore .` [cite: 9] |
+| `git restore --source` | Restaura arquivo de um *commit* antigo para o *workdir*. | [cite_start]`git restore --source 7b6a9ba index.html` [cite: 11] |
+| `git restore --source .` | Restaura todo o *workdir* para um *commit* antigo. | [cite_start]`git restore --source 7b6a9ba .` [cite: 12] |
 
-### GIT RESET (Desfazer commits locais)
+---
 
-O `reset` é ideal para desfazer *commits* locais, alterando o histórico do *branch*. Use `HEAD~N` para desfazer os últimos N *commits*.
+### GIT RESET (Desfazer Commits Locais)
+
+O `reset` desfaz *commits* locais, alterando o histórico da *branch*.
 
 | Opção | Propósito | Efeito nas Alterações |
 | :--- | :--- | :--- |
-| `git reset nome-arquivo` | Retira o arquivo da *staging area* (igual a `git restore --staged`). | [cite_start]Mantém no *workdir*. [cite: 13] |
-| `git reset --soft HEAD~1` | Desfaz o último *commit* (move o `HEAD` para trás). | [cite_start]Mantém as modificações no **staging area**. [cite: 13] |
-| `git reset --mixed HEAD~1` | Desfaz o último *commit* e tira do *staging*. | [cite_start]Mantém as modificações no **workdir**. [cite: 13] |
-| `git reset --hard HEAD~1` | Desfaz o último *commit* e descarta as modificações. | [cite_start]**Apaga** as modificações do *workdir*. [cite: 13] |
+| `git reset nome-arquivo` | Remove arquivo do *staging* (igual a `git restore --staged`). | [cite_start]Mantém no *workdir*. [cite: 13] |
+| `git reset --soft HEAD~1` | Desfaz o último *commit*, mantendo alterações no *staging*. | [cite_start]Alterações no *staging*. [cite: 13] |
+| `git reset --mixed HEAD~1` | Desfaz o último *commit* e remove do *staging*. | [cite_start]Alterações no *workdir*. [cite: 13] |
+| `git reset --hard HEAD~1` | Desfaz o último *commit* e descarta alterações. | [cite_start]Apaga alterações do *workdir*. [cite: 13] |
 
-### GIT REVERT (Desfazer commits remotos)
+---
 
-Cria um **novo commit** que desfaz as alterações de um *commit* anterior, **preservando o histórico**. Ideal para *commits* que já foram enviados (`push`).
+### GIT REVERT (Desfazer Commits Remotos)
+
+Cria um novo *commit* que reverte alterações de um *commit* anterior, preservando o histórico.
 
 ```bash
-[cite_start]git revert c23ae2d # Desfaz o commit c23ae2d e cria um novo commit [cite: 13]
-[cite_start]git push # Envia o novo commit de reversão [cite: 13] 
+git revert c23ae2d # Desfaz o commit c23ae2d [cite: 13]
+git push # Envia a reversão [cite: 13]
 ```
-### GIT REMOTE (Conexão)
 
-| Comando | Propósito | Exemplo |
-| :--- | :--- | :--- |
-| `git remote add <nome> <URL>` | Adiciona um repositório remoto ao workdir local. | `git remote add upstream https://github.com/original/repo.git` |
-| `git remote -v` | Lista os repositórios remotos vinculados. | `git remote -v` |
-| `git remote remove <nome>` | Remove um repositório remoto. | `git remote remove upstream` |
-| `git fetch <nome-remoto>` | Baixa os objetos (commits) do remoto para o local, mas não mescla (merge). | `git fetch origin` |
+---
+
+### GIT RM (Remover do Rastreamento)
+
+* Remove arquivo do controle de versão, mantendo-o no sistema de arquivos.
+    ```bash
+    git rm --cached nome-arquivo [cite: 4]
+    git commit -m "chore: remove nome-arquivo do rastreamento" [cite: 4]
+    ```
+
+---
+
+## 4. Sincronização com Repositório Remoto
+
+### GIT PUSH & PULL
+
+| Comando | Propósito | Exemplo | Observação |
+| :--- | :--- | :--- | :--- |
+| `git push origin main` | Envia *commits* locais para o remoto. | [cite_start]`git push origin main` [cite: 16] | Verifique conflitos antes. |
+| `git push -u origin main` | Vincula *branch* local ao remoto. | [cite_start]`git push -u origin main` [cite: 16] | Permite `git push` sem especificar. |
+| `git push --all origin` | Envia todas as *branches* locais. | [cite_start]`git push --all origin` [cite: 16] | Útil para novos repositórios. |
+| `git push origin branch1 branch2` | Envia *branches* específicas. | [cite_start]`git push origin dev feature/login` [cite: 16] | Especifique múltiplas *branches*. |
+| `git push origin main --force` | Força o envio, sobrescrevendo o remoto. | [cite_start]`git push origin main --force` [cite: 16] | Use `--force-with-lease` para segurança. |
+| `git pull` | Sincroniza local com remoto (*fetch* + *merge*). | [cite_start]`git pull` [cite: 16] | Resolve conflitos localmente. |
+| `git pull --rebase` | Sincroniza com *rebase* em vez de *merge*. | [cite_start]`git pull --rebase` [cite: 16] | Cria histórico linear. |
+| `git pull origin branch` | Sincroniza uma *branch* específica. | [cite_start]`git pull origin dev` [cite: 16] | Especifique o remoto e a *branch*. |
+
+---
+
+### GIT REMOTE
+
+| Comando | Propósito | Exemplo | Observação |
+| :--- | :--- | :--- | :--- |
+| `git remote add nome URL` | Adiciona um repositório remoto. | [cite_start]`git remote add origin https://github.com/usuario/repo.git` [cite: 16] | Use `origin` ou `upstream` como padrão. |
+| `git remote -v` | Lista repositórios remotos vinculados. | [cite_start]`git remote -v` [cite: 16] | Verifica URLs de remotos. |
+| `git remote remove nome` | Remove um repositório remoto. | [cite_start]`git remote remove origin` [cite: 16] | Remove vínculo local. |
+| `git remote rename nome novo-nome` | Renomeia um repositório remoto. | [cite_start]`git remote rename origin novo-origin` [cite: 16] | Útil para reorganizações. |
+
+---
+
+## 5. Gerenciamento de Branches
 
 ### GIT BRANCH & SWITCH
 
-| Comando | Propósito | Exemplo |
-| :--- | :--- | :--- |
-| `git branch` | Lista as branches locais existentes. | `git branch` |
-| `git branch -r` | Lista as branches remotas. | `git branch -r` |
-| `git branch -a` | Lista todas (local e remota). | `git branch -a` |
-| `git branch <nome-branch>` | Cria uma nova branch local. | `git branch hotfix/bug-01` |
-| `git switch <nome-branch>` | Altera para a branch especificada. | `git switch feature/nova-api` |
-| `git switch -c <nova-branch>` | Cria e altera para a nova branch (atalho para branch + switch). | `git switch -c feature/login` |
-| `git branch -d <nome-branch>` | Exclui a branch local (se estiver mesclada). | `git branch -d feature/old-task` |
-| `git branch -D <nome-branch>` | Força a exclusão da branch local. | `git branch -D feature/buggy-code` |
-| `git push origin :<nome-branch>` | Exclui a branch no repositório remoto. | `git push origin :feature/done` |
+| Comando | Propósito | Exemplo | Observação |
+| :--- | :--- | :--- | :--- |
+| `git branch` | Lista *branches* locais. | [cite_start]`git branch` [cite: 17] | Mostra *branch* atual com `*`. |
+| `git branch -r` | Lista *branches* remotas. | [cite_start]`git branch -r` [cite: 17] | Inclui `origin/nome-branch`. |
+| `git branch -a` | Lista todas (*local* e *remota*). | [cite_start]`git branch -a` [cite: 17] | Útil para visão geral. |
+| `git branch nome-branch` | Cria uma nova *branch* local. | [cite_start]`git branch feature/nova-api` [cite: 17] | Não muda para a *branch*. |
+| `git switch nome-branch` | Altera para a *branch* especificada. | [cite_start]`git switch feature/nova-api` [cite: 17] | Alternativa ao `checkout`. |
+| `git switch -c nome-branch` | Cria e altera para a nova *branch*. | [cite_start]`git switch -c feature/login` [cite: 17] | Equivalente a `checkout -b`. |
+| `git branch -d nome-branch` | Exclui *branch* local (se mesclada). | [cite_start]`git branch -d feature/old-task` [cite: 17] | Falha se não mesclada. |
+| `git branch -D nome-branch` | Força exclusão de *branch* local. | [cite_start]`git branch -D feature/buggy-code` [cite: 17] | Remove mesmo sem mesclar. |
+| `git branch -m nome-antigo novo-nome` | Renomeia uma *branch*. | [cite_start]`git branch -m feature/old feature/new` [cite: 17] | Atualiza localmente. |
+| `git checkout ID-commit` | Move *HEAD* para um *commit* (modo *detached*). | [cite_start]`git checkout 7b6a9ba` [cite: 17] | Útil para inspeção. |
 
-### GIT MERGE & REBASE (Fundindo Branches)
+---
 
-| Comando | Propósito | Fluxo |
-| :--- | :--- | :--- |
-| `git merge <branch-origem>` | Funde o histórico da *branch-origem* na *branch-destino*. | Cria um **novo commit de merge**. |
-| `git rebase <branch-destino>` | Move/reaplica os commits do *branch* atual no topo do *branch-destino*. | Cria um **histórico linear** e limpo. |
-| `git rebase -i HEAD~N` | *Rebase* interativo. Usado para editar, unificar (`squash`), ou reordenar os últimos `N` commits antes de enviá-los. | |
+## 6. Merge e Rebase
 
-### GIT STASH (Salvar Alterações Temporariamente)
+### GIT MERGE & REBASE
+
+| Comando | Propósito | Fluxo | Observação |
+| :--- | :--- | :--- | :--- |
+| `git merge nome-branch-origem` | Funde *branch-origem* na *branch-destino*. | [cite_start]Cria um *commit* de merge. [cite: 27] | Pode gerar conflitos. |
+| `git rebase nome-branch-destino` | Reaplica *commits* da *branch* atual no topo da *branch-destino*. | [cite_start]Cria histórico linear. [cite: 27] | Evita *merge commits*. |
+| `git rebase -i HEAD~N` | Edita, unifica (*squash*) ou reordena *commits*. | [cite_start]`git rebase -i HEAD~3` [cite: 27] | Útil para limpar histórico. |
+
+* **Exemplo de Rebase Interativo**:
+  ```bash
+  git rebase -i HEAD~3
+  # No editor, altere "pick" para "squash" para unificar commits
+  # Salve e edite a mensagem final do commit
+  ```
+
+---
+
+## 7. Stash (Alterações Temporárias)
+
+### GIT STASH
 
 | Comando | Propósito | Observação |
 | :--- | :--- | :--- |
-| `git stash` | Salva temporariamente alterações modificadas ou *staged* para voltar a elas depois. | Ideal para trocar de *branch* sem commitar. |
-| `git stash list` | Lista as alterações salvas. | |
-| `git stash apply <ID-stash>` | Reaplica as alterações salvas, mantendo o *stash* na lista. | |
-| `git stash pop` | Reaplica as alterações e remove o *stash* da lista. | |
-| `git stash drop <ID-stash>` | Remove manualmente o *stash*. | |
+| `git stash` | Salva alterações do *workdir* ou *staging* temporariamente. | [cite_start]Ideal para trocar de *branch* sem commitar. [cite: 29] |
+| `git stash list` | Lista *stashes* salvas. | [cite_start]`git stash list` [cite: 29] |
+| `git stash apply ID-stash` | Reaplica *stash*, mantendo-o na lista. | [cite_start]`git stash apply stash@{0}` [cite: 29] |
+| `git stash pop` | Reaplica o último *stash* e o remove. | [cite_start]`git stash pop` [cite: 29] |
+| `git stash drop ID-stash` | Remove *stash* específico. | [cite_start]`git stash drop stash@{0}` [cite: 29] |
+| `git stash clear` | Remove todos os *stashes*. | [cite_start]`git stash clear` [cite: 29] |
 
-### GIT CHERRY-PICK (Migrar Commit)
+---
 
-Traz um commit específico de outra *branch* para a *branch* atual (destino), criando um novo commit com o mesmo conteúdo.
+## 8. Tags (Marcar Versões)
 
-```bash
-git cherry-pick <ID-commit>
-```
+### GIT TAG
 
-### GIT TAG (Marcar Versões)
+| Comando | Propósito | Exemplo | Observação |
+| :--- | :--- | :--- | :--- |
+| `git tag -a nome-tag -m "mensagem"` | Cria tag anotada no *commit* atual (*HEAD*). | [cite_start]`git tag -a v1.0.0 -m "Versão 1.0.0"` [cite: 30] | Útil para *releases*. |
+| `git tag -a nome-tag ID-commit -m "mensagem"` | Cria tag para *commit* específico. | [cite_start]`git tag -a v1.0.0 c23ae2d -m "Versão 1.0.0"` [cite: 30] | Especifique o *commit*. |
+| `git tag` | Lista todas as tags. | [cite_start]`git tag` [cite: 30] | Mostra tags locais. |
+| `git push origin nome-tag` | Envia tag ao remoto. | [cite_start]`git push origin v1.0.0` [cite: 30] | Necessário para *releases*. |
+| `git push origin --tags` | Envia todas as tags locais. | [cite_start]`git push origin --tags` [cite: 30] | Envia todas de uma vez. |
+| `git show nome-tag` | Exibe detalhes da tag. | [cite_start]`git show v1.0.0` [cite: 30] | Mostra *commit* associado. |
+| `git tag -v nome-tag` | Verifica tag anotada. | [cite_start]`git tag -v v1.0.0` [cite: 30] | Confirma integridade. |
+| `git tag -d nome-tag` | Remove tag local. | [cite_start]`git tag -d v1.0.0` [cite: 30] | Não afeta o remoto. |
 
-Usado para marcar versões de *releases*, *milestones*, etc.
+---
 
-* `git tag -a <nome-tag> -m "mensagem"`: Adiciona uma tag anotada (versão) ao commit atual (`HEAD`).
-    * **Exemplo:** `git tag -a v1.0.0 -m "Versão de produção 1.0.0"`.
-* `git push origin <nome-tag>`: Envia uma tag específica para o remoto.
-* `git push origin --tags`: Envia todas as tags locais para o remoto.
-* `git tag -d <nome-tag>`: Remove a tag local.
-* `git tag -v <nome-tag>`: verificar a tag criada anotada local.
+## 9. Cherry-pick (Migrar Commit)
 
-### 7.1. Fluxo Fork (Contribuição para Projetos Externos)
+### GIT CHERRY-PICK
 
-O *Fluxo Fork* é ideal para contribuir com projetos onde você não tem permissão de escrita direta no repositório original.
+* Traz um *commit* específico de outra *branch* para a *branch* atual, criando um novo *commit*.
+    ```bash
+    git cherry-pick ID-commit [cite: 31]
+    ```
+    * **Exemplo**: Trazer um *commit* de correção de bug de `feature/bugfix` para `main`:
+      ```bash
+      git switch main
+      git cherry-pick c23ae2d
+      git push origin main
+      ```
+
+---
+
+## 10. Busca Binária
+
+### GIT BISECT
+
+* Localiza o *commit* que introduziu um problema usando busca binária.
+
+| Comando | Propósito | Exemplo |
+| :--- | :--- | :--- |
+| `git bisect start` | Inicia a busca binária. | [cite_start]`git bisect start` [cite: 32] |
+| `git bisect bad HEAD` | Marca o *commit* atual (*HEAD*) como ruim. | [cite_start]`git bisect bad HEAD` [cite: 32] |
+| `git bisect good ID-commit` | Marca um *commit* antigo como bom. | [cite_start]`git bisect good c23ae2d` [cite: 32] |
+| `git bisect good` | Marca o *commit* atual como bom. | [cite_start]`git bisect good` [cite: 32] |
+| `git bisect bad` | Marca o *commit* atual como ruim. | [cite_start]`git bisect bad` [cite: 32] |
+| `git bisect reset` | Finaliza a busca e retorna ao estado original. | [cite_start]`git bisect reset` [cite: 32] |
+| `git revert ID-commit` | Reverte o *commit* encontrado. | [cite_start]`git revert c23ae2d` [cite: 32] |
+
+* **Exemplo**: Encontrar o *commit* que causou um bug:
+  ```bash
+  git bisect start
+  git bisect bad HEAD
+  git bisect good a1b2c3d
+  # Teste o código e marque como good/bad
+  git bisect good
+  git bisect bad
+  # Quando encontrar o commit
+  git bisect reset
+  git revert ID-commit
+  ```
+
+---
+
+## 11. Fluxos de Trabalho
+
+### Resumo dos Fluxos
+
+| Fluxo | Branch Principal | Integração | Histórico | Uso Comum |
+| :--- | :--- | :--- | :--- | :--- |
+| *GitHub Flow (Rebase)* | `main` | *Rebase* antes do PR | Linear | Projetos ágeis, equipes pequenas |
+| *GitHub Flow (Merge)* | `main` | *Merge* com *commit* de mesclagem | Preserva histórico | Projetos com auditoria |
+| *Git Flow* | `develop` (e `main` para *releases*) | *Merge* na `develop` | Preserva histórico | Projetos complexos com *releases* |
+
+---
+
+### 11.1. Fluxo Fork (Contribuição para Projetos Externos)
+
+O *Fluxo Fork* é ideal para contribuir com projetos sem permissão de escrita direta.
 
 1.  **Fork no GitHub**:
-    * O repositório original é copiado para a sua conta no GitHub (*fork*).
-    * Agora você tem controle total sobre o *fork* na sua conta.
-
+    * Copie o repositório original para sua conta GitHub (*fork*).
 2.  **Clonar o Fork para o Seu Ambiente Local**:
-    * Você clona o repositório *forkado* (o seu) para o seu computador (`workdir`).
     ```bash
-    git clone [https://github.com/sua-conta/seu-fork.git](https://github.com/sua-conta/seu-fork.git)
+    git clone https://github.com/sua-conta/seu-fork.git [cite: 23]
     ```
-
 3.  **Adicionar o Repositório Original como Remoto Adicional (`upstream`)**:
-    * Para acompanhar as alterações que ocorrem no repositório original, adicione-o como um remoto chamado `upstream`.
     ```bash
-    git remote add upstream [https://github.com/usuario-original/repo-original.git](https://github.com/usuario-original/repo-original.git)
+    git remote add upstream https://github.com/usuario-original/repo-original.git [cite: 23]
+    git remote -v [cite: 23]
     ```
-    * **Verificação:** Para confirmar que o remoto foi adicionado:
-    ```bash
-    git remote -v
-    ```
-
 4.  **Verificar e Sincronizar as Alterações do Original (Upstream)**:
-    * Use `git fetch upstream` para buscar as alterações do repositório original (`upstream`) sem alterar seu `workdir` ou *branch* local.
     ```bash
-    git fetch upstream
+    git fetch upstream [cite: 24]
+    git log upstream/main [cite: 25]
     ```
-    * **O que acontece?** O comando apenas atualiza as referências locais para as *branches* do repositório original.
-    * Você pode inspecionar as alterações disponíveis sem aplicá-las:
-    ```bash
-    git log upstream/main
-    ```
-
 5.  **Aplicar Alterações do Repositório Original ao Seu Fork**:
-    * **Mescle** as alterações do repositório original (`upstream/main`) com sua *branch* local (`main`):
     ```bash
-    git merge upstream/main
-    ```
-    * **Envie** as alterações mescladas para o seu *fork* no GitHub (mantendo-o atualizado):
-    ```bash
-    git push origin main
+    git merge upstream/main [cite: 26]
+    git push origin main [cite: 26]
     ```
 
-> **Resumo da Sincronização:** Use `git fetch upstream` para buscar as alterações do original sem alterar nada no seu repositório local. Depois, use `git merge upstream/main` e `git push origin main` para aplicar e enviar as atualizações.
+> [cite_start]**Resumo:** Use `git fetch upstream` para buscar alterações sem mudar o *workdir*. Depois, use `git merge upstream/main` e `git push origin main` para atualizar o *fork*. [cite: 26]
 
+---
 
-### 7.2. GitHub Flow (Com REBASE)
+### 11.2. GitHub Flow (com Rebase)
 
-Este fluxo é ideal para manter um histórico de *commits* limpo e linear na *branch* principal, utilizando `git rebase` antes de abrir o Pull Request (PR).
+Ideal para históricos lineares, usando *rebase* antes do Pull Request (PR).
 
 #### FASE 1: Sincronizar Branch Principal
-
-1.  **Garantir que a *branch* principal (`main`) local esteja selecionada:**
+1.  **Selecionar `main` local:**
     ```bash
-    git switch main
+    git switch main [cite: 33]
     ```
-2.  **Baixar as alterações mais recentes do repositório remoto:**
+2.  **Baixar alterações do remoto:**
     ```bash
-    git pull origin main
-    ```
-
-#### FASE 2: Criar Feature Branch e Commitar
-
-1.  **Criar e mudar para a nova *branch* de *feature*:**
-    ```bash
-    git switch -c feature/minha-tarefa
-    # ou
-    # git checkout -b feature/minha-tarefa
-    ```
-2.  **Trabalhar nos arquivos, adicionar ao *staging* e commitar:**
-    ```bash
-    git add .
-    git commit -m "Implementando feature X"
-    ```
-3.  **Publicar as mudanças, criando a *branch* no remoto (`-u` define o *upstream*):**
-    ```bash
-    git push -u origin feature/minha-tarefa
-    ```
-
-#### FASE 3: Sincronizar e Rebasear (Limpeza de Histórico)
-
-1.  **Voltar para a *branch* principal local:**
-    ```bash
-    git switch main
-    ```
-2.  **Sincronizar `main` novamente para garantir que está com as últimas alterações:**
-    ```bash
-    git pull origin main
-    ```
-3.  **Voltar para a *branch* de *feature*:**
-    ```bash
-    git switch feature/minha-tarefa
-    ```
-4.  **Sincronizar com a `main` via Rebase:**
-    * Este comando envia os *commits* da sua *feature* para o topo da `main` local, eliminando o *commit* de *merge* e criando um histórico linear.
-    ```bash
-    git rebase main
-    ```
-5.  **Atualizar o *branch* remoto:**
-    * Como o histórico foi reescrito (rebase), é necessário forçar o *push*. O `--force-with-lease` é o mais seguro.
-    ```bash
-    git push --force-with-lease
-    ```
-
-#### FASE 4: Pull Request (PR) e Limpeza
-
-1.  **Abrir Pull Request no GitHub** (`feature/minha-tarefa` $\rightarrow$ `main`).
-    * Após aprovação, o *merge* deve ser feito no GitHub (tipicamente com a opção *Squash and Merge* ou *Rebase and Merge*).
-2.  **Voltar para `main` local e atualizar:**
-    ```bash
-    git switch main
-    git pull origin main
-    ```
-3.  **Limpar a *branch* de *feature* local (se o *merge* já ocorreu):**
-    ```bash
-    git branch -d feature/minha-tarefa
-    ```
-### 7.3. GitHub Flow (Com MERGE Padrão)
-
-Este fluxo cria um *commit* de mesclagem (merge commit) na *branch* de destino, preservando o histórico exato de quando as *branches* foram combinadas.
-
-#### FASE 1: Sincronizar Branch Principal
-
-1.  **Garantir que a *branch* principal (`main`) local esteja selecionada:**
-    ```bash
-    git switch main
-    ```
-2.  **Baixar as alterações mais recentes do repositório remoto:**
-    ```bash
-    git pull origin main
+    git pull origin main [cite: 33]
     ```
 
 #### FASE 2: Criar Feature Branch e Commitar
-
-1.  **Criar e mudar para a nova *branch* de *feature*:**
+1.  **Criar e mudar para a *branch* de *feature*:**
     ```bash
-    git switch -c feature/nova-api
-    # ou
-    # git checkout -b feature/nova-api
+    git switch -c feature/minha-tarefa [cite: 33]
     ```
-2.  **Trabalhar nos arquivos, adicionar ao *staging* e commitar:**
+2.  **Trabalhar, adicionar e commitar:**
     ```bash
-    git add .
-    git commit -m "Implementando feature X"
+    git add . [cite: 33]
+    git commit -m "feat: implementa nova funcionalidade" [cite: 33]
     ```
-3.  **Publicar as mudanças, criando a *branch* no remoto (`-u` define o *upstream*):**
+3.  **Publicar a *branch* no remoto:**
     ```bash
-    git push -u origin feature/nova-api
+    git push -u origin feature/minha-tarefa [cite: 33]
     ```
 
-#### FASE 3: Sincronizar Feature com Main (Antes do PR)
-
-É altamente recomendado atualizar a *branch* de *feature* com as últimas alterações da `main` antes de abrir o PR para resolver conflitos localmente.
-
-**Opção 1: Uso Direto do `git pull`**
-
-1.  Estando na `feature/nova-api`, o `git pull origin main` buscará as alterações da `main` remota e as mesclará imediatamente na sua *feature* local.
+#### FASE 3: Sincronizar e Rebasear
+1.  **Voltar para `main` local:**
     ```bash
-    git pull origin main
-    ```
-2.  Envie as mudanças (incluindo o novo *merge commit*) para o remoto:
-    ```bash
-    git push
-    ```
-
-**Opção 2: Fluxo Explícito (Mais Didático)**
-
-1.  **Sair da *feature* e atualizar `main` local:**
-    ```bash
-    git switch main
-    git pull origin main
-    ```
-2.  **Voltar para a *feature*:**
-    ```bash
-    git switch feature/nova-api
-    ```
-3.  **Mesclar `main` na *feature*:**
-    ```bash
-    git merge main
-    ```
-4.  **Enviar as mudanças para o remoto:**
-    ```bash
-    git push origin feature/nova-api
-    ```
-
-#### FASE 4: Pull Request (PR) e Limpeza
-
-1.  **PULL REQUEST no GitHub:**
-    * Acessar a interface Web e fazer a solicitação para unir a *branch* (`feature/nova-api` $\rightarrow$ `main`).
-    * Após aprovação, o *merge* é feito no GitHub.
-2.  **Voltar para `main` local e atualizar:**
-    ```bash
-    git switch main
-    git pull origin main
-    ```
-3.  **Limpar a *branch* de *feature* local (se o *merge* já ocorreu):**
-    ```bash
-    git branch -d feature/nova-api
-    ```
-### 7.4. Git Flow (Default) - Feature $\rightarrow$ Develop
-
-Este é um fluxo de trabalho mais estruturado, onde o desenvolvimento principal acontece na *branch* `develop`.
-
-#### FASE 1: Sincronizar Branch de Desenvolvimento
-
-1.  **Mudar para a *branch* principal de desenvolvimento (`develop`):**
-    ```bash
-    git switch develop
-    # ou
-    # git checkout develop
-    ```
-2.  **Baixar as alterações mais recentes do repositório remoto:**
-    ```bash
-    git pull origin develop
-    ```
-
-#### FASE 2: Criar Feature Branch e Commitar
-
-1.  **Criar a *branch* de *feature* a partir da `develop` e mudar para ela:**
-    ```bash
-    git switch -c feature/cadastro-usuario
-    ```
-2.  **Trabalhar nos arquivos, adicionar ao *staging* e commitar:**
-    ```bash
-    git add .
-    git commit -m "Implementando cadastro-usuario"
-    ```
-3.  **Publicar as mudanças, criando a *branch* no remoto (`-u` define o *upstream*):**
-    ```bash
-    git push -u origin feature/cadastro-usuario
-    ```
-
-#### FASE 3: Sincronizar Feature com Develop (Antes do PR)
-
-É comum atualizar a *branch* de *feature* com as últimas alterações da `develop` antes de mesclar.
-
-1.  **Voltar para a `develop` local e atualizar:**
-    ```bash
-    git switch develop
-    git pull origin develop
+    git switch main [cite: 33]
+    git pull origin main [cite: 33]
     ```
 2.  **Voltar para a *branch* de *feature*:**
     ```bash
-    git switch feature/cadastro-usuario
+    git switch feature/minha-tarefa [cite: 33]
     ```
-3.  **Mesclar `develop` na *feature* (para resolver conflitos localmente):**
+3.  **Rebase com `main` para histórico linear:**
     ```bash
-    git merge develop
+    git rebase main [cite: 33]
     ```
-4.  **Enviar as mudanças para o remoto:**
+4.  **Atualizar o remoto:**
     ```bash
-    git push origin feature/cadastro-usuario
+    git push --force-with-lease [cite: 33]
     ```
 
 #### FASE 4: Pull Request (PR) e Limpeza
-
-1.  **PULL REQUEST no GitHub:**
-    * Acessar a interface Web e fazer a solicitação para unir a *branch* (`feature/cadastro-usuario` $\rightarrow$ `develop`).
-    * Após aprovação, o *merge* é feito no GitHub.
-2.  **Voltar para `develop` local e atualizar:**
+1.  **Abrir PR no GitHub** (`feature/minha-tarefa` → `main`).
+2.  **Após aprovação, fazer *merge* no GitHub.**
+3.  **Atualizar e limpar localmente:**
     ```bash
-    git switch develop
-    git pull origin develop
-    ```
-3.  **Limpar a *branch* de *feature* local (se o *merge* já ocorreu):**
-    ```bash
-    git branch -d feature/cadastro-usuario
+    git switch main [cite: 33]
+    git pull origin main [cite: 33]
+    git branch -d feature/minha-tarefa [cite: 33]
     ```
 
-### 7.3. GitHub Flow (Com MERGE Padrão/Default)
+---
 
-Este fluxo utiliza a *branch* principal (`main`) como base e integra as *features* via *merge commit*, preservando um histórico completo de mesclagem.
+### 11.3. GitHub Flow (com Merge Padrão)
+
+Cria um *commit* de mesclagem, preservando o histórico de mesclagem.
 
 #### FASE 1: Sincronizar Branch Principal
-
-1.  **Garantir que a *branch* principal (`main`) local esteja selecionada:**
+1.  **Selecionar `main` local:**
     ```bash
-    git switch main
+    git switch main [cite: 34]
     ```
-2.  **Baixar as alterações mais recentes do repositório remoto:**
+2.  **Baixar alterações do remoto:**
     ```bash
-    git pull origin main
+    git pull origin main [cite: 34]
     ```
 
 #### FASE 2: Criar Feature Branch e Commitar
-
-1.  **Criar e mudar para a nova *branch* de *feature*:**
+1.  **Criar e mudar para a *branch* de *feature*:**
     ```bash
-    git switch -c feature/otimizar-performance
+    git switch -c feature/nova-api [cite: 34]
     ```
-    * *(Edição de código...)*
-2.  **Trabalhar nos arquivos, adicionar ao *staging* e commitar:**
+2.  **Trabalhar, adicionar e commitar:**
     ```bash
-    git add .
-    git commit -m "Implementando otimizacao de cache"
+    git add . [cite: 34]
+    git commit -m "feat: implementa nova API" [cite: 34]
     ```
-3.  **Publicar as mudanças, criando a *branch* no remoto:**
+3.  **Publicar a *branch* no remoto:**
     ```bash
-    git push -u origin feature/otimizar-performance
+    git push -u origin feature/nova-api [cite: 34]
     ```
 
 #### FASE 3: Sincronizar Feature com Main (Antes do PR)
-
-É crucial atualizar a *branch* de *feature* com as últimas mudanças da `main` antes de abrir o PR.
-
-1.  **Voltar para a `main` local e atualizar:**
+**Opção 1: Uso Direto do `git pull`**
+1.  **Mesclar `main` na *feature* local:**
     ```bash
-    git switch main
-    git pull origin main
+    git pull origin main [cite: 34]
+    ```
+2.  **Enviar alterações para o remoto:**
+    ```bash
+    git push [cite: 34]
+    ```
+
+**Opção 2: Fluxo Explícito**
+1.  **Atualizar `main` local:**
+    ```bash
+    git switch main [cite: 34]
+    git pull origin main [cite: 34]
     ```
 2.  **Voltar para a *feature*:**
     ```bash
-    git switch feature/otimizar-performance
+    git switch feature/nova-api [cite: 34]
     ```
-3.  **Mesclar `main` na *feature* (para resolver conflitos localmente):**
+3.  **Mesclar `main` na *feature*:**
     ```bash
-    git merge main
+    git merge main [cite: 34]
     ```
-4.  **Atualizar a *branch* remota com o *merge commit*:**
+    * **Exemplo de Resolução de Conflitos**:
+      ```bash
+      # Edite os arquivos com conflitos
+      git add arquivo-conflito
+      git commit -m "fix: resolve conflitos de merge"
+      ```
+4.  **Enviar alterações para o remoto:**
     ```bash
-    git push origin feature/otimizar-performance
+    git push origin feature/nova-api [cite: 34]
     ```
 
 #### FASE 4: Pull Request (PR) e Limpeza
-
-1.  **PULL REQUEST no GitHub:**
-    * Acessar a interface Web e fazer a solicitação para unir a *branch* (`feature/otimizar-performance` $\rightarrow$ `main`).
-    * Após aprovação, o *merge* é feito no GitHub.
-2.  **Voltar para `main` local e atualizar:**
+1.  **Abrir PR no GitHub** (`feature/nova-api` → `main`).
+2.  **Após aprovação, fazer *merge* no GitHub.**
+3.  **Atualizar e limpar localmente:**
     ```bash
-    git switch main
-    git pull origin main
-    ```
-3.  **Limpar a *branch* de *feature* local (se o *merge* já ocorreu):
-    ```bash
-    git branch -d feature/otimizar-performance
-    ```
-4.  **Remover a *branch* do repositório remoto:**
-    ```bash
-    git push origin :feature/otimizar-performance
+    git switch main [cite: 34]
+    git pull origin main [cite: 34]
+    git branch -d feature/nova-api [cite: 34]
+    git push origin :feature/nova-api [cite: 34]
     ```
 
+---
+
+### 11.4. Git Flow (Default - Feature → Develop)
+
+Estrutura para projetos com *branches* `develop` e `main`.
+
+#### FASE 1: Sincronizar Branch de Desenvolvimento
+1.  **Mudar para `develop` local:**
+    ```bash
+    git switch develop [cite: 35]
+    ```
+2.  **Baixar alterações do remoto:**
+    ```bash
+    git pull origin develop [cite: 35]
+    ```
+
+#### FASE 2: Criar Feature Branch e Commitar
+1.  **Criar e mudar para a *branch* de *feature*:**
+    ```bash
+    git switch -c feature/cadastro-usuario [cite: 35]
+    ```
+2.  **Trabalhar, adicionar e commitar:**
+    ```bash
+    git add . [cite: 35]
+    git commit -m "feat: implementa cadastro de usuário" [cite: 35]
+    ```
+3.  **Publicar a *branch* no remoto:**
+    ```bash
+    git push -u origin feature/cadastro-usuario [cite: 35]
+    ```
+
+#### FASE 3: Sincronizar Feature com Develop
+1.  **Atualizar `develop` local:**
+    ```bash
+    git switch develop [cite: 35]
+    git pull origin develop [cite: 35]
+    ```
+2.  **Voltar para a *feature*:**
+    ```bash
+    git switch feature/cadastro-usuario [cite: 35]
+    ```
+3.  **Mesclar `develop` na *feature*:**
+    ```bash
+    git merge develop [cite: 35]
+    ```
+    * **Exemplo de Resolução de Conflitos**:
+      ```bash
+      # Edite os arquivos com conflitos
+      git add arquivo-conflito
+      git commit -m "fix: resolve conflitos de merge"
+      ```
+4.  **Enviar alterações para o remoto:**
+    ```bash
+    git push origin feature/cadastro-usuario [cite: 35]
+    ```
+
+#### FASE 4: Pull Request (PR) e Limpeza
+1.  **Abrir PR no GitHub** (`feature/cadastro-usuario` → `develop`).
+2.  **Após aprovação, fazer *merge* no GitHub.**
+3.  **Atualizar e limpar localmente:**
+    ```bash
+    git switch develop [cite: 35]
+    git pull origin develop [cite: 35]
+    git branch -d feature/cadastro-usuario [cite: 35]
+    ```
+
+---
+
+## 12. Glossário Rápido
+
+- **Workdir**: Diretório de trabalho onde os arquivos do projeto estão localizados.
+- **Staging Area**: Área intermediária onde arquivos são preparados para o *commit*.
+- **HEAD**: Ponteiro para o *commit* atual (geralmente o último da *branch* ativa).
+- **Commit**: Registro de alterações no repositório com uma mensagem descritiva.
+- **Branch**: Linha de desenvolvimento independente no repositório.
+- **Remote**: Repositório hospedado fora do *workdir* local (ex.: GitHub).
+- **Merge**: Combinação de duas *branches*, criando um *commit* de mesclagem.
+- **Rebase**: Reaplicação de *commits* em outra base, criando um histórico linear.
+
+---
+
+## 13. Dicas Finais
+
+* **Evite `git push --force`**: Prefira `git push --force-with-lease` para evitar sobrescrever alterações alheias.
+* **Commits Claros**: Use mensagens padronizadas (ex.: `feat:`, `fix:`, `docs:`) para maior legibilidade.
+* **Resolva Conflitos Localmente**: Sempre sincronize antes de abrir PRs para minimizar conflitos.
+* **Use `.gitignore`**: Ignore arquivos desnecessários como `.env`, `node_modules/`.
+* **Nomenclatura de Branches**: Adote padrões como `feature/nome`, `bugfix/nome`, `hotfix/nome`.
+* **Aliases Úteis**: Configure atalhos para comandos frequentes:
+  ```bash
+  git config --global alias.st status
+  git config --global alias.co checkout
+  git config --global alias.br branch
+  ```
+
+Este *cheat sheet* é seu guia para dominar o Git e o GitHub! 🚀

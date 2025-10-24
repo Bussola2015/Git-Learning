@@ -39,10 +39,15 @@ git log --format="%h - %an, %ar : %s"
 #mostra somente os últimos 2 commits
 git log -n 2
 
+#log de branch especifica
+git log nome-branch
+
 ----------------------------------GIT STATUS
 
 #sempre para ver status atual
 git status
+
+----------------------------------- GIT DIFF | SHOW 
 
 #arquivos modificados, não commitados no workdir com o último commit no repo local - compara estados entre arquivos no workdir não commitados e o último commit
 git diff
@@ -181,6 +186,13 @@ git push origin main --force
 
 #vincula a branch local com a branch remota. Depois desse comando você não precisa espeficcar qual o repo e a branch, ex: git push ou git pull
 git push -u origin main
+
+#push de todas as branches locais para o remoto
+git push --all origin       
+
+#push de branchs específicas    
+git push origin nome-da-branch1 nome-da-branch2
+git push origin dev feature/login
 
 #depois do clone, preciso sincronizar com origin (GitHub), utilizo pull
 git pull https://github.com/Bussola2015/Git-Sketch.git
@@ -352,9 +364,14 @@ git stash pop
 git stash clear
 
 --------------------------------------------- GIT TAG
-#-a = add
+#A partir de uma tag, conseguimos criar uma Realese manualmente no GitHub (remoto) - usado para marcar versões de releases, milestones, etc.
+#add tag para o commit atual (HEAD) - cria a tag anotada com -m mensagem
 git tag -a nome-da-tag -m "mensagem"
 git tag -a v0.1.0 -m "mensagem de milestone"
+
+#crio tag para commit específico
+git tag -a nome-da-tag ID-commit -m "mensagem"
+git tag -a v0.1.0 c23ae2d -m "mensagem de milestone"
 
 #lista tags
 git tag
@@ -362,8 +379,19 @@ git tag
 #enviar a tag
 git push origin v0.1.0
 
+#envio todas as tags
+git push origin --tags
+
 git show nome-tag-ou-versao
 git show v0.1.0
+
+#verificar a tag criada anotada
+git tag -v nome-da-tag
+git tag -v v0.1.0
+
+#remover tag local
+git tag -d nome-da-tag
+git tag -d v0.1.0   
 
 --------------------------------------------- GIT CHERRY-PICK
 #geralmente o que está em branch diferente e queremos trazer esse commit para essa branch. Executo o comando abaixo na branch destino.
